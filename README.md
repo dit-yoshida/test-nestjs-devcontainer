@@ -11,7 +11,6 @@
 
 ```json settings.json
 {
-  // ...
   "remote.containers.dotfiles.repository": "https://github.com/dit-yoshida/dotfiles-devcontainer",
   "remote.containers.dotfiles.targetPath": "~/dotfiles-devcontainer",
   "remote.containers.dotfiles.installCommand": "~/dotfiles-devcontainer/.bin/install.sh"
