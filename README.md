@@ -1,3 +1,26 @@
+# test-nestjs-devcontainer
+
+- VSCode 上で開発環境統一するために DevContiner を設定
+  - [Developing inside a Container using Visual Studio Code Remote Development](https://code.visualstudio.com/docs/remote/containers)
+- Nest + MySQL 環境を Docker コンテナ上に構築、自動でサーバ起動
+  - Nest: ポート 3000
+  - MySQL: ポート 3306
+- DevContainer 環境では zsh を利用想定
+  - なので、 zsh に必要な設定は [dotfiles](https://code.visualstudio.com/docs/remote/containers#_personalizing-with-dotfile-repositories) から参照する
+    - 以下を **ユーザ** 側の設定に追加
+
+```json settings.json
+{
+  // ...
+  "remote.containers.dotfiles.repository": "https://github.com/dit-yoshida/dotfiles-devcontainer",
+  "remote.containers.dotfiles.targetPath": "~/dotfiles-devcontainer",
+  "remote.containers.dotfiles.installCommand": "~/dotfiles-devcontainer/.bin/install.sh"
+}
+```
+
+
+---
+
 <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
 </p>
