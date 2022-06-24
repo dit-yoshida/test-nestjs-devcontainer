@@ -5,6 +5,9 @@
 - Nest + MySQL 環境を Docker コンテナ上に構築、自動でサーバ起動
   - Nest: ポート 3000
   - MySQL: ポート 3306
+
+## 初期設定
+
 - DevContainer 環境では zsh を利用想定
   - なので、 zsh に必要な設定は [dotfiles](https://code.visualstudio.com/docs/remote/containers#_personalizing-with-dotfile-repositories) から参照する
     - 以下を **ユーザ** 側の設定に追加
@@ -17,6 +20,19 @@
 }
 ```
 
+- DB接続情報の用意
+  - `.env.sample` を `.env` にコピー
+  - `DATABASE_URL` をDBに合わせて修正
+    - (MySQL でない場合は `prisma/schema.prisma` の `provider` も差し替え必要)
+- マイグレーション実行
+  - DB にテーブル等を構築する
+
+```sh
+# seed も含む (推奨)
+$ npx prisma migration dev
+# seed は含まない
+$ npx prisma migration dev --skip-seed
+```
 
 ---
 
