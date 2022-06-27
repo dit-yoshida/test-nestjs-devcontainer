@@ -13,6 +13,9 @@ FROM mcr.microsoft.com/vscode/devcontainers/javascript-node:0-${VARIANT}
 # [Optional] Uncomment if you want to install more global node modules
 # RUN su node -c "npm install -g <your-package-list-here>"
 
+# Setu default shell
+ENV SHELL /usr/bin/zsh
+
 # Start dev server
 WORKDIR /home/node/workspace
 CMD [ "npm", "run", "start:dev" ]

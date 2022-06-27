@@ -2,9 +2,9 @@
 
 - VSCode 上で開発環境統一するために DevContiner を設定
   - [Developing inside a Container using Visual Studio Code Remote Development](https://code.visualstudio.com/docs/remote/containers)
-- Nest + MySQL 環境を Docker コンテナ上に構築、自動でサーバ起動
+- Nest + Postgres 環境を Docker コンテナ上に構築、自動でサーバ起動
   - Nest: ポート 3000
-  - MySQL: ポート 3306
+  - Postgres: ポート 5432
 
 ## 初期設定
 
@@ -23,7 +23,7 @@
 - DB接続情報の用意
   - `.env.sample` を `.env` にコピー
   - `DATABASE_URL` をDBに合わせて修正
-    - (MySQL でない場合は `prisma/schema.prisma` の `provider` も差し替え必要)
+    - ホスト名はサービス名の `db` を指定
 - マイグレーション実行
   - DB にテーブル等を構築する
 
@@ -32,6 +32,8 @@
 $ npx prisma migration dev
 # seed は含まない
 $ npx prisma migration dev --skip-seed
+# seed のみ実行
+$ npx prisma db seed
 ```
 
 ---

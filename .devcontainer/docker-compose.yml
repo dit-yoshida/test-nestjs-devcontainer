@@ -27,23 +27,22 @@ services:
       - db
 
   db:
-    image: mysql:5.7
-    # restart: unless-stopped
+    image: postgres:14.4
+    ports:
+      - 5432:5432
+    volumes:
+      - ./db/data:/var/lib/postgresql/data
     secrets:
       - db-password
     environment:
-      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db-password
-      MYSQL_DATABASE: my_testdb
-      # MYSQL_USER: docker
-      # MYSQL_PASSWORD: docker
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD_FILE: /run/secrets/db-password
+      POSTGRES_DB: my_testdb
+      POSTGRES_INITDB_ARGS: '--encoding=UTF-8'
       TZ: 'Asia/Tokyo'
-    volumes:
-      - ./db/data:/var/lib/mysql
-      - ./db/my.cnf:/etc/mysql/conf.d/my.cnf
-      - ./db/sql:/docker-entrypoint-initdb.d
-    ports:
-      - "3306:3306"
-    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    restart: always
+    command: postgres -c stats_temp_directory=/tmp
+
 secrets:
   db-password:
     file: db/password.txt
