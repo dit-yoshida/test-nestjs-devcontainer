@@ -6,12 +6,23 @@ import {
   Body,
   Put,
   Delete,
+  UseFilters,
 } from '@nestjs/common';
+import { User as UserModel, Post as PostModel } from '@prisma/client';
 import { UserService } from './user.service';
 import { PostService } from './post.service';
-import { User as UserModel, Post as PostModel } from '@prisma/client';
+import { HttpExceptionFilter, PrismaErrorFilter } from '../common/filters';
+import {
+  CreateDraftDto,
+  SignupUserDto,
+  PublishPostDto,
+  DeletePostDto,
+  GetFilteredPostsDto,
+  GetPostByIdDto,
+} from './dto';
 
 @Controller('prisma')
+@UseFilters(HttpExceptionFilter, PrismaErrorFilter)
 export class PrismaController {
   constructor(
     private readonly userService: UserService,
@@ -19,8 +30,9 @@ export class PrismaController {
   ) {}
 
   @Get('post/:id')
-  async getPostById(@Param('id') id: string): Promise<PostModel> {
-    return this.postService.post({ id: Number(id) });
+  async getPostById(@Param() params: GetPostByIdDto): Promise<PostModel> {
+    const { id } = params;
+    return this.postService.post({ id: id });
   }
 
   @Get('feed')
@@ -32,8 +44,9 @@ export class PrismaController {
 
   @Get('filtered-posts/:searchString')
   async getFilteredPosts(
-    @Param('searchString') searchString: string,
+    @Param() params: GetFilteredPostsDto,
   ): Promise<PostModel[]> {
+    const { searchString } = params;
     return this.postService.posts({
       where: {
         OR: [
@@ -49,9 +62,7 @@ export class PrismaController {
   }
 
   @Post('post')
-  async createDraft(
-    @Body() postData: { title: string; content?: string; authorEmail: string },
-  ): Promise<PostModel> {
+  async createDraft(@Body() postData: CreateDraftDto): Promise<PostModel> {
     const { title, content, authorEmail } = postData;
     return this.postService.createPost({
       title,
@@ -63,22 +74,22 @@ export class PrismaController {
   }
 
   @Post('user')
-  async signupUser(
-    @Body() userData: { name?: string; email: string },
-  ): Promise<UserModel> {
+  async signupUser(@Body() userData: SignupUserDto): Promise<UserModel> {
     return this.userService.createUser(userData);
   }
 
   @Put('publish/:id')
-  async publishPost(@Param('id') id: string): Promise<PostModel> {
+  async publishPost(@Param() params: PublishPostDto): Promise<PostModel> {
+    const { id } = params;
     return this.postService.updatePost({
-      where: { id: Number(id) },
+      where: { id },
       data: { published: true },
     });
   }
 
   @Delete('post/:id')
-  async deletePost(@Param('id') id: string): Promise<PostModel> {
-    return this.postService.deletePost({ id: Number(id) });
+  async deletePost(@Param() params: DeletePostDto): Promise<PostModel> {
+    const { id } = params;
+    return this.postService.deletePost({ id });
   }
 }
