@@ -25,6 +25,7 @@ import {
   ApiCreatedResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
+  ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
 import { PostEntity } from './entities/post.entity';
@@ -44,6 +45,10 @@ export class PrismaController {
   ) {}
 
   @Get('post/:id')
+  @ApiOperation({
+    summary: '投稿取得',
+    description: '投稿を取得する。',
+  })
   @ApiOkResponse({
     type: PostEntity,
   })
@@ -56,6 +61,7 @@ export class PrismaController {
   }
 
   @Get('feed')
+  // TODO: @ApiOperation 記載
   @ApiOkResponse({
     type: Array<PostEntity>,
   })
@@ -66,6 +72,7 @@ export class PrismaController {
   }
 
   @Get('filtered-posts/:searchString')
+  // TODO: @ApiOperation 記載
   @ApiOkResponse({
     type: Array<PostEntity>,
   })
@@ -88,6 +95,7 @@ export class PrismaController {
   }
 
   @Post('post')
+  // TODO: @ApiOperation 記載
   @ApiCreatedResponse({
     description: 'The draft has been successfully created.',
     type: PostEntity,
@@ -104,6 +112,7 @@ export class PrismaController {
   }
 
   @Post('user')
+  // TODO: @ApiOperation 記載
   @ApiCreatedResponse({
     description: 'The user has been successfully created.',
     type: UserEntity,
@@ -113,6 +122,7 @@ export class PrismaController {
   }
 
   @Put('publish/:id')
+  // TODO: @ApiOperation 記載
   @ApiOkResponse({
     description: 'The post has been successfully published.',
     type: PostEntity,
@@ -129,6 +139,7 @@ export class PrismaController {
   }
 
   @Delete('post/:id')
+  // TODO: @ApiOperation 記載
   @ApiOkResponse({
     description: 'The post has been successfully deleted.',
     type: PostEntity,

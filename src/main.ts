@@ -1,6 +1,7 @@
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { RedocModule, RedocOptions } from 'nestjs-redoc';
 import { AppModule } from './app.module';
 import { PrismaService } from './prisma/prisma.service';
 
@@ -16,6 +17,35 @@ async function bootstrap() {
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
+
+  const redocOptions: RedocOptions = {
+    title: 'Test NestJS DevContainer API',
+    // logo: {
+    //   url: 'https://redocly.github.io/redoc/petstore-logo.png',
+    //   backgroundColor: '#F0F0F0',
+    //   altText: 'PetStore logo',
+    // },
+    sortPropsAlphabetically: true,
+    hideDownloadButton: false,
+    hideHostname: false,
+    // auth: {
+    //   enabled: true,
+    //   user: 'admin',
+    //   password: '123',
+    // },
+    tagGroups: [
+      {
+        name: 'Samples',
+        tags: ['app'],
+      },
+      {
+        name: 'Core resources',
+        tags: ['prisma'],
+      },
+    ],
+  };
+  // Instead of using SwaggerModule.setup() you call this module
+  await RedocModule.setup('/docs', app, document, redocOptions);
 
   await app.listen(3000);
 
