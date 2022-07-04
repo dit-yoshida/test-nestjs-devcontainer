@@ -1,6 +1,8 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { IsNumberString } from 'class-validator';
 
 export class PublishPostDto {
   @IsNumberString()
-  id: number;
+  @ApiProperty()
+  id: string;
 }

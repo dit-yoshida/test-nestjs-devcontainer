@@ -20,8 +20,22 @@ import {
   GetFilteredPostsDto,
   GetPostByIdDto,
 } from './dto';
+import {
+  ApiBadRequestResponse,
+  ApiCreatedResponse,
+  ApiNotFoundResponse,
+  ApiOkResponse,
+  ApiTags,
+} from '@nestjs/swagger';
+import { PostEntity } from './entities/post.entity';
+import { HttpErrorEntity } from 'src/common/entities/http-error.entity';
+import { UserEntity } from './entities/user.entity';
 
 @Controller('prisma')
+@ApiTags('prisma')
+@ApiBadRequestResponse({
+  type: HttpErrorEntity,
+})
 @UseFilters(HttpExceptionFilter, PrismaErrorFilter)
 export class PrismaController {
   constructor(
@@ -30,12 +44,21 @@ export class PrismaController {
   ) {}
 
   @Get('post/:id')
+  @ApiOkResponse({
+    type: PostEntity,
+  })
+  @ApiNotFoundResponse({
+    type: HttpErrorEntity,
+  })
   async getPostById(@Param() params: GetPostByIdDto): Promise<PostModel> {
     const { id } = params;
-    return this.postService.post({ id: id });
+    return this.postService.post({ id: parseInt(id) });
   }
 
   @Get('feed')
+  @ApiOkResponse({
+    type: Array<PostEntity>,
+  })
   async getPublishedPosts(): Promise<PostModel[]> {
     return this.postService.posts({
       where: { published: true },
@@ -43,6 +66,9 @@ export class PrismaController {
   }
 
   @Get('filtered-posts/:searchString')
+  @ApiOkResponse({
+    type: Array<PostEntity>,
+  })
   async getFilteredPosts(
     @Param() params: GetFilteredPostsDto,
   ): Promise<PostModel[]> {
@@ -62,6 +88,10 @@ export class PrismaController {
   }
 
   @Post('post')
+  @ApiCreatedResponse({
+    description: 'The draft has been successfully created.',
+    type: PostEntity,
+  })
   async createDraft(@Body() postData: CreateDraftDto): Promise<PostModel> {
     const { title, content, authorEmail } = postData;
     return this.postService.createPost({
@@ -74,22 +104,40 @@ export class PrismaController {
   }
 
   @Post('user')
+  @ApiCreatedResponse({
+    description: 'The user has been successfully created.',
+    type: UserEntity,
+  })
   async signupUser(@Body() userData: SignupUserDto): Promise<UserModel> {
     return this.userService.createUser(userData);
   }
 
   @Put('publish/:id')
+  @ApiOkResponse({
+    description: 'The post has been successfully published.',
+    type: PostEntity,
+  })
+  @ApiNotFoundResponse({
+    type: HttpErrorEntity,
+  })
   async publishPost(@Param() params: PublishPostDto): Promise<PostModel> {
     const { id } = params;
     return this.postService.updatePost({
-      where: { id },
+      where: { id: parseInt(id) },
       data: { published: true },
     });
   }
 
   @Delete('post/:id')
+  @ApiOkResponse({
+    description: 'The post has been successfully deleted.',
+    type: PostEntity,
+  })
+  @ApiNotFoundResponse({
+    type: HttpErrorEntity,
+  })
   async deletePost(@Param() params: DeletePostDto): Promise<PostModel> {
     const { id } = params;
-    return this.postService.deletePost({ id });
+    return this.postService.deletePost({ id: parseInt(id) });
   }
 }
